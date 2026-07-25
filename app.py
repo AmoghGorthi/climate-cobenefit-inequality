@@ -102,10 +102,10 @@ else:
     hov = {'sum':':.2f','imd_decile':True,'lad_name':True}
 
 dm['v'] = dm['sum'].clip(0, S['vmax'])
-f = px.choropleth_mapbox(dm, geojson=gj, locations=loc, featureidkey=key, color='v',
-                         color_continuous_scale=BLUES, range_color=(0,S['vmax']),
-                         mapbox_style='carto-positron', opacity=.82,
-                         hover_name=loc, hover_data={**hov,'v':False})
+f = px.choropleth_map(dm, geojson=gj, locations=loc, featureidkey=key, color='v',
+                      color_continuous_scale=BLUES, range_color=(0, S['vmax']),
+                      map_style='carto-positron', opacity=.82,
+                      hover_name=loc, hover_data={**hov, 'v': False})
 f.update_traces(marker_line_width=.2, marker_line_color='white')
 f.update_layout(height=520, margin=dict(l=0,r=0,t=0,b=0),
                 coloraxis_colorbar=dict(title='', thickness=12, len=.6))
