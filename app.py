@@ -86,30 +86,53 @@ note(f"Decile 1 exceeds decile 2 by 0.08 despite a lower physical activity value
 # 2 ── WHERE
 st.markdown("---")
 st.markdown("### Where")
+
 la = pq('la')
 opts = ['All England (by local authority)'] + sorted(la['region'].unique())
 sel = st.selectbox("Area", opts)
 
 if sel.startswith('All England'):
-    gj, dm = geo('boundaries_la.geojson'), la.copy()
+    path = 'boundaries_la.geojson'
+    dm = la.copy()
     loc, key = 'lad_name', 'properties.lad_name'
-    hov = {'sum':':.2f','region':True,'n':True}
+    hov = {'sum': ':.2f', 'region': True, 'n': True}
 else:
-    gj = geo(f"geo/{sel.replace(' ','_')}.geojson")
+    path = f"geo/{sel.replace(' ', '_')}.geojson"
     dm = mapdata()
-    dm = dm[dm['region']==sel].copy()
+    dm = dm[dm['region'] == sel].copy()
     loc, key = 'small_area', 'properties.small_area'
-    hov = {'sum':':.2f','imd_decile':True,'lad_name':True}
+    hov = {'sum': ':.2f', 'imd_decile': True, 'lad_name': True}
 
+gj = geo(path)
 dm['v'] = dm['sum'].clip(0, S['vmax'])
+
+@st.cache_data
+def bounds(p):
+    with open(p) as fh:
+        g = json.load(fh)
+    xs, ys = [], []
+    def walk(c):
+        if isinstance(c[0], (int, float)):
+            xs.append(c[0]); ys.append(c[1])
+        else:
+            for q in c: walk(q)
+    for feat in g['features']:
+        walk(feat['geometry']['coordinates'])
+    return (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2, max(max(xs) - min(xs), max(ys) - min(ys))
+
+clon, clat, span = bounds(path)
+zoom = 5.4 if span > 8 else 6.2 if span > 4 else 7.2 if span > 2 else 8.2
+
 f = px.choropleth_map(dm, geojson=gj, locations=loc, featureidkey=key, color='v',
                       color_continuous_scale=BLUES, range_color=(0, S['vmax']),
                       map_style='carto-positron', opacity=.82,
+                      center={'lat': clat, 'lon': clon}, zoom=zoom,
                       hover_name=loc, hover_data={**hov, 'v': False})
 f.update_traces(marker_line_width=.2, marker_line_color='white')
-f.update_layout(height=520, margin=dict(l=0,r=0,t=0,b=0),
+f.update_layout(height=520, margin=dict(l=0, r=0, t=0, b=0),
                 coloraxis_colorbar=dict(title='', thickness=12, len=.6))
 st.plotly_chart(f, use_container_width=True)
+
 note(f"Colour capped at the 95th percentile ({S['vmax']}). LSOAs hold roughly equal populations "
      f"but the largest quartile covers 92.6% of England's land — the map overstates per-person "
      f"benefit by {S['area_bias']}%. Read magnitude from the charts, geography from the map.")
