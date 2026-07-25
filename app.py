@@ -4,6 +4,8 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 
+import plotly
+st.caption(f"plotly {plotly.__version__}")
 st.set_page_config(page_title="Climate Co-Benefit Inequality", layout="centered")
 
 BLUES = ['#f7fbff','#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b']
