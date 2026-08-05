@@ -1399,28 +1399,28 @@ st.markdown("---")
 with st.expander("Definitions, data and limitations"):
     st.markdown(
         """
-        **Unit of analysis**  
+        **Unit of analysis**
         Lower Layer Super Output Areas using 2011 geography.
 
-        **Peer group**  
+        **Peer group**
         Neighbourhoods in the same English region and the same
         Index of Multiple Deprivation decile.
 
-        **Peer gap**  
+        **Peer gap**
         Selected neighbourhood value minus the median value of its
         peer group. A negative value means the neighbourhood is below
         comparable places.
 
-        **Peer percentile**  
+        **Peer percentile**
         Rank within the regional deprivation peer group. A low
         percentile indicates a comparatively low projected benefit.
 
-        **Modified scenario**  
+        **Modified scenario**
         The sum of pathways selected by the user. It is an analytical
         sensitivity test, not a prediction of a different government
         policy.
 
-        **Interpretation limits**  
+        **Interpretation limits**
         The data contains modelled projected monetised co-benefits,
         not observed outcomes, investment allocations or causal
         effects. IMD is an external 2019 neighbourhood measure.
@@ -1428,7 +1428,7 @@ with st.expander("Definitions, data and limitations"):
         intervals are available, and spatial autocorrelation is not
         modelled.
 
-        **Prototype scope**  
+        **Prototype scope**
         The tool supports exploratory comparison and sensitivity
         analysis. It does not recommend where funding should be
         allocated.
